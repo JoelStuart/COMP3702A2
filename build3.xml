@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Any words or attribute values which are capitalized and separated by
+  underscores are places where you add the data.
+
+  Example: PROJECT_NAME, enter your project name
+-->
+
+<project name="a2" default="jar" basedir=".">
+    <!-- source code package -->
+    <property name="src" value="src"/>
+
+    <!-- classes folder (will be deleted) -->
+    <property name="cls" value="classes"/>
+
+    <!-- the directory of the jar file -->
+    <property name="jar.dir" value="."/>
+
+    <!-- the jar file itself -->
+    <property name="jar.file" value="${jar.dir}/${ant.project.name}-launch.jar"/>
+
+    <!-- the fully qualified name of the main class -->
+    <property name="main" value="src.solver.Solver.Java"/>
+
+    <!-- initialization -->
+    <target name="-init">
+
+        <!-- the class folder* -->
+        <mkdir dir="${cls}"/>
+
+        <!-- the jar directory -->
+        <mkdir dir="${jar.dir}"/>
+    </target>
+
+    <!-- compiling of files -->
+    <target name="-post-init-comp" depends="-init">
+
+        <!--
+          turn all of the source java classes into class files
+          located in the directory we made*
+        -->
+        <javac srcdir="${src}" destdir="${cls}"/>
+    </target>
+
+    <!-- creation of the jar file -->
+    <target name="jar" depends="-post-init-comp">
+
+        <!-- make the executable jar -->
+        <jar destfile="${jar.file}" basedir="${cls}">
+            <manifest>
+
+                <attribute name="Manifest-Version" value="1.0"/>
+                <attribute name="Ant-Version" value="Apache Ant 1.8.3"/>
+
+                <attribute name="Main-Class" value="${main}"/>
+
+                <!--
+                  for some reason, this is needed for me in order
+                  to have the jar function right
+                -->
+                <attribute name="Class-Path" value="${main}"/>
+
+                <!-- Any other mainfest data is added here -->
+
+            </manifest>
+        </jar>
+
+        <!-- remove the class folder -->
+        <delete dir="${cls}"/>
+    </target>
+</project>
